@@ -1,0 +1,35 @@
+body {
+  background-image: url(../img/aviones4.jpg);
+  background-size:cover;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+    .login-card {
+      max-width: 400px;
+      padding: 2rem;
+      border-radius: 2rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      background-color: #dfe3f0;
+    }
+
+    .form-control:focus {
+      box-shadow: none;
+      border-color: #86b7fe;
+    }
+
+    .form-icon {
+      position: absolute;
+      top: 10px;
+      left: 15px;
+      color: #6c757d;
+    }
+
+    .form-group {
+      position: relative;
+    }
+
+    .form-group input {
+      padding-left: 2.5rem;
+    }
