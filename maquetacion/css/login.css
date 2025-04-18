@@ -1,11 +1,14 @@
-body {
-  background-image: url(../img/aviones4.jpg);
-  background-size:cover;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+body{
+  margin: 0px;
+  padding: 0px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color:rgba(202, 202, 202, 0.15)   
 }
+
+.navbar{
+  background-color:rgba(59, 54, 54, 0.347) 
+}
+
     .login-card {
       max-width: 400px;
       padding: 2rem;
