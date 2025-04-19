@@ -27,6 +27,30 @@ function configurarEventos() {
   }
 }
 
+// Delegación para los botones "Adquirir"
+document.getElementById('resultados').addEventListener('click', function (event) {
+  if (event.target && event.target.classList.contains('btn-adquirir')) {
+    const btn = event.target;
+
+    const paquete = {
+      id: btn.getAttribute('data-id'),
+      nombre: btn.getAttribute('data-nombre'),
+      descripcion: btn.getAttribute('data-descripcion'),
+      origen: btn.getAttribute('data-origen'),
+      destino: btn.getAttribute('data-destino'),
+      fecha: btn.getAttribute('data-fecha'),
+      aerolinea: btn.getAttribute('data-aerolinea'),
+      precio: btn.getAttribute('data-precio')
+    };
+
+    const numPersonas = document.getElementById('campo3').value;
+
+    localStorage.setItem('paquete', JSON.stringify(paquete));
+    localStorage.setItem('numPersonas', numPersonas);
+    window.location.href = '/pagos';
+  }
+});
+
 // Buscar paquetes o vuelos según los campos
 function buscarPaquetes() {
   const origen = document.getElementById('campo1').value;
@@ -59,35 +83,50 @@ function mostrarResultados(data) {
   const resultados = document.getElementById('resultados');
   resultados.innerHTML = '';
 
+  // Obtener el número de personas desde el campo de filtro
+  const numPersonas = document.getElementById('campo3').value;
+  const numPersonasInt = parseInt(numPersonas); // Convertir a número entero
+
   if (data.length > 0) {
     contenedor.style.display = 'block';
     data.forEach(paquete => {
+      const precioTotal = paquete.precio_total * numPersonasInt; // Multiplicar el precio por el número de personas
+
       resultados.innerHTML += `
         <div class="col-md-4 mb-4">
-        <div class="card shadow-sm">
-          <h5 class="card-header text-center">Paquete ${paquete.nombre}</h5>
-          <div class="card-body">
-            <p class="card-text"><strong>Descripción:</strong> ${paquete.descripcion}</p>
-            <p class="card-text"><strong>Origen:</strong> ${paquete.origen_ciudad}</p>
-            <p class="card-text"><strong>Destino:</strong> ${paquete.destino_ciudad}</p>
-            <p class="card-text"><strong>Aerolínea:</strong> ${paquete.aerolinea}</p>
-            <p class="card-text"><strong>Fecha:</strong> ${new Date(paquete.fecha).toLocaleDateString()}</p>
-            <p class="card-text"><strong>Hora:</strong> ${paquete.hora_salida}</p>
-            <p class="card-text"><strong>Precio:</strong> $${paquete.precio_total}</p>
-            <div class="col-md-12 text-center">
-              <a href="pagos" class=" col-md-7 btn btn-primary">Adquirir</a>
+          <div class="card shadow-sm">
+            <h5 class="card-header text-center">Paquete ${paquete.nombre}</h5>
+            <div class="card-body">
+              <p class="card-text"><strong>Descripción:</strong> ${paquete.descripcion}</p>
+              <p class="card-text"><strong>Origen:</strong> ${paquete.origen_ciudad}</p>
+              <p class="card-text"><strong>Destino:</strong> ${paquete.destino_ciudad}</p>
+              <p class="card-text"><strong>Aerolínea:</strong> ${paquete.aerolinea}</p>
+              <p class="card-text"><strong>Fecha:</strong> ${new Date(paquete.fecha).toLocaleDateString()}</p>
+              <p class="card-text"><strong>Hora:</strong> ${paquete.hora_salida}</p>
+              <p class="card-text"><strong>Precio:</strong> $${precioTotal.toLocaleString()}</p>
+              <div class="col-md-12 text-center">
+                <button class="btn btn-primary btn-adquirir"
+                        data-id="${paquete.id}"
+                        data-nombre="${paquete.nombre}" 
+                        data-descripcion="${paquete.descripcion}" 
+                        data-origen="${paquete.origen_ciudad}" 
+                        data-destino="${paquete.destino_ciudad}" 
+                        data-fecha="${paquete.fecha}" 
+                        data-aerolinea="${paquete.aerolinea}" 
+                        data-precio="${precioTotal}">
+                  Adquirir
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
       `;
     });
   } else {
-    resultados.innerHTML = '<p class="text-muted">No se encontraron resultados para tu busqueda.</p>';
+    resultados.innerHTML = '<p class="text-muted">No se encontraron resultados para tu búsqueda.</p>';
     contenedor.style.display = 'block';
   }
 }
-
 
 // Cargar nombres de promociones (solo los primeros 3)
 function cargarPromociones() {

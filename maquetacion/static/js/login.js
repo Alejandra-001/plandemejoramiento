@@ -24,6 +24,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
   .then(data => {
     // Guardar datos del usuario (puedes usar localStorage o sessionStorage)
     localStorage.setItem('rol', data.rol);
+    localStorage.setItem('id', data.id);
 
     // Redirigir al home
     window.location.href = '/home';
