@@ -1,16 +1,32 @@
-from flask import render_template, request, jsonify
+from flask import request, jsonify
 from modelos.usuario_modelo import verificar_usuario
 
 def login_controlador():
     if request.method == 'POST':
-        usuario = request.form['usuario']
-        contrasena = request.form['contrasena']
+        # Intenta obtener desde JSON
+        data = request.get_json(silent=True)
+        
+        if data:
+            usuario = data.get('email')
+            contrasena = data.get('password')
+        else:
+            # Fallback a formulario (HTML form)
+            usuario = request.form.get('usuario')
+            contrasena = request.form.get('contrasena')
+
+        if not usuario or not contrasena:
+            return jsonify({"error": "Email y contraseña son requeridos"}), 400
+
         usuario_info = verificar_usuario(usuario, contrasena)
 
         if usuario_info:
-            # Aquí retornamos un JSON si el login es exitoso
-            return jsonify({"message": "Login exitoso", "id": usuario_info[0], "usuario": usuario_info[1], "rol": usuario_info[2]}), 200
+            return jsonify({
+                "message": "Login exitoso",
+                "id": usuario_info[0],
+                "usuario": usuario_info[1],
+                "rol": usuario_info[2]
+            }), 200
         else:
-            # Si el usuario no existe, retornamos un error
             return jsonify({"error": "Usuario o contraseña incorrectos."}), 401
-    return render_template('login.html')
+
+    return jsonify({"error": "Método no permitido"}), 405

@@ -38,6 +38,7 @@ document.getElementById('resultados').addEventListener('click', function (event)
       descripcion: btn.getAttribute('data-descripcion'),
       origen: btn.getAttribute('data-origen'),
       destino: btn.getAttribute('data-destino'),
+      hotel: btn.getAttribute('data-hotel'),
       fecha: btn.getAttribute('data-fecha'),
       aerolinea: btn.getAttribute('data-aerolinea'),
       precio: btn.getAttribute('data-precio')
@@ -100,6 +101,7 @@ function mostrarResultados(data) {
               <p class="card-text"><strong>Descripción:</strong> ${paquete.descripcion}</p>
               <p class="card-text"><strong>Origen:</strong> ${paquete.origen_ciudad}</p>
               <p class="card-text"><strong>Destino:</strong> ${paquete.destino_ciudad}</p>
+              <p class="card-text"><strong>hotel:</strong> ${paquete.hotel}</p>
               <p class="card-text"><strong>Aerolínea:</strong> ${paquete.aerolinea}</p>
               <p class="card-text"><strong>Fecha:</strong> ${new Date(paquete.fecha).toLocaleDateString()}</p>
               <p class="card-text"><strong>Hora:</strong> ${paquete.hora_salida}</p>
@@ -110,7 +112,8 @@ function mostrarResultados(data) {
                         data-nombre="${paquete.nombre}" 
                         data-descripcion="${paquete.descripcion}" 
                         data-origen="${paquete.origen_ciudad}" 
-                        data-destino="${paquete.destino_ciudad}" 
+                        data-destino="${paquete.destino_ciudad}"
+                        data-hotel="${paquete.hotel}" 
                         data-fecha="${paquete.fecha}" 
                         data-aerolinea="${paquete.aerolinea}" 
                         data-precio="${precioTotal}">
@@ -175,3 +178,9 @@ function cerrarSesion(event) {
     window.location.href = '/login';
   }, 100);
 }
+
+// Evita que el usuario use la flecha hacia atrás
+window.history.pushState(null, "", window.location.href);
+window.onpopstate = function () {
+    window.history.pushState(null, "", window.location.href);
+};

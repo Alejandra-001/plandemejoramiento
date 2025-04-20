@@ -4,16 +4,21 @@ from controladores.promocion_controlador import home_controlador, obtener_promoc
 from controladores.paquete_controlador import filtrar_paquetes_controlador
 from controladores.adquirir_paquete_controlador import adquirir_paquete_controlador
 from controladores.reservas_controlador import guardar_reserva_controlador
+from controladores.modificar_reserva_controlador import modificar_reserva_controlador
+from controladores.dashboard_controlador import obtener_dashboard
 from flask_cors import CORS
-
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 CORS(app)
 app.secret_key = '12345'
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'GET':
+        return render_template('login.html')
     return login_controlador()
+
 
 @app.route('/home')
 def home():
@@ -39,6 +44,18 @@ def pagos():
 def guardar_reserva():
     return guardar_reserva_controlador()
 
+@app.route('/modificar_reserva', methods=['PUT'])
+def modificar_reserva():
+    return modificar_reserva_controlador()
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/api/dashboard', methods=['GET'])
+def dashboard_api():
+    return obtener_dashboard()
+    
 @app.route('/logout', methods=['POST'])
 def logout():
     session.clear()
