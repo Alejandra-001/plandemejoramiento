@@ -1,0 +1,8 @@
+Entrar a git bash
+"cd" y nombre de la carpeta, para ingresar a una carpeta. 
+comandos- paso 1 para crear un entorno virtual: $ python -m venv venv.
+paso 2 para activar carpeta: $ source edumultipro/scripts/activate.
+paso 3 para instalar : pip install -r requirements.txt.
+"deactivate" para desactivar una carpéta. 
+
+paso 4  para ejecutar: python run.py
