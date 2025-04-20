@@ -101,11 +101,12 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('confirmarBtn').addEventListener('click', function () {
     // Validar campos antes de procesar
     const nombre = document.getElementById("campo1").value.trim();
+    const nTarjeta = document.getElementById("campo2").value.trim();
     const correo = document.getElementById("campo4").value.trim();
     const direccion = document.getElementById("campo5").value.trim();
     const ciudad = document.getElementById("campo6").value.trim();
-
-    if (!nombre || !correo || !direccion || !ciudad) {
+  
+    if (!nombre || !nTarjeta || !correo || !direccion || !ciudad) {
       Swal.fire({
         icon: 'warning',
         title: 'Campos incompletos',
@@ -113,33 +114,20 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       return;
     }
-
+  
     // Mostrar spinner
     new bootstrap.Modal(document.getElementById('spinnerModal')).show();
-
+  
     setTimeout(function () {
       bootstrap.Modal.getInstance(document.getElementById('spinnerModal')).hide();
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Pago exitoso',
-        text: 'Su pago ha sido procesado exitosamente.',
-        confirmButtonText: 'OK'
-      }).then(() => {
-        // Mostrar voucher
-        document.getElementById("voucherNombre").textContent = nombre;
-        document.getElementById("voucherCorreo").textContent = correo;
-        document.getElementById("voucherDireccion").textContent = direccion;
-        document.getElementById("voucherCiudad").textContent = ciudad;
-        document.getElementById("voucherPaquete").textContent = paquete.descripcion;
-        document.getElementById("voucherMonto").textContent = `$${totalConImpuesto.toLocaleString()}`;
-        document.getElementById("voucherFecha").textContent = new Date().toLocaleString();
-
-        new bootstrap.Modal(document.getElementById('modalVoucher')).show();
-
+  
+      // Verificar si el número de tarjeta es "1111111111"
+      if (nTarjeta === '1111111111') {
+        // Insertar la reserva con estado "pendiente"
         const fechaReserva = new Date().toISOString().slice(0, 10);
-        const estadoReserva = 'pagado';
-
+        const estadoReserva = 'pendiente';
+  
+        // Realizar la inserción en la base de datos para estado pendiente
         fetch('/guardar_reserva', {
           method: 'POST',
           headers: {
@@ -156,20 +144,74 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-          console.log('Reserva pagada guardada:', data);
+          console.log('Reserva pendiente guardada:', data);
         })
         .catch(error => {
           console.error('Error al guardar la reserva:', error);
         });
-
-        // Limpiar localStorage
-        localStorage.removeItem('paquete');
-        localStorage.removeItem('numPersonas');
-        localStorage.removeItem('voucher');
-      });
-
-    }, 4000);
+  
+        // Mostrar mensaje de pago no exitoso
+        Swal.fire({
+          icon: 'error',
+          title: 'Pago no exitoso',
+          text: 'El número de tarjeta ingresado no es válido. verificalo e intenta nuevamente',
+          confirmButtonText: 'OK'
+        });
+      } else {
+        // Si la tarjeta es válida, procesamos el pago y lo marcamos como "aprobado"
+        Swal.fire({
+          icon: 'success',
+          title: 'Pago exitoso',
+          text: 'Su pago ha sido procesado exitosamente.',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          // Mostrar voucher
+          document.getElementById("voucherNombre").textContent = nombre;
+          document.getElementById("voucherCorreo").textContent = correo;
+          document.getElementById("voucherDireccion").textContent = direccion;
+          document.getElementById("voucherCiudad").textContent = ciudad;
+          document.getElementById("voucherPaquete").textContent = paquete.descripcion;
+          document.getElementById("voucherMonto").textContent = `$${totalConImpuesto.toLocaleString()}`;
+          document.getElementById("voucherFecha").textContent = new Date().toLocaleString();
+  
+          new bootstrap.Modal(document.getElementById('modalVoucher')).show();
+  
+          const fechaReserva = new Date().toISOString().slice(0, 10);
+          const estadoReserva = 'aprobado'; // Cambiar estado a aprobado
+  
+          fetch('/guardar_reserva', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              cliente_id: clienteId,
+              paquete_id: paqueteId,
+              fecha_reserva: fechaReserva,
+              total: totalConImpuesto,
+              estado: estadoReserva,
+              num_personas: numPersonas
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Reserva aprobada guardada:', data);
+          })
+          .catch(error => {
+            console.error('Error al guardar la reserva:', error);
+          });
+  
+          // Limpiar localStorage
+          localStorage.removeItem('paquete');
+          localStorage.removeItem('numPersonas');
+          localStorage.removeItem('voucher');
+        });
+      }
+    }, 4000); // Tiempo de espera para simular la respuesta del pago
   });
+  
+  
+  
 
   // Redirigir al home al cerrar modal del voucher
   const modalVoucher = document.getElementById('modalVoucher');
