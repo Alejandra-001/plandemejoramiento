@@ -1,17 +1,21 @@
-body {
-  background-image: url(../img/aviones4.jpg);
-  background-size:cover;
+body{
   height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  margin: 0px;
+  padding: 0px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color:rgba(202, 202, 202, 0.15)   
 }
+
+.navbar{
+  background-color:rgba(59, 54, 54, 0.347) 
+}
+
     .login-card {
       max-width: 400px;
       padding: 2rem;
       border-radius: 2rem;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      background-color: #dfe3f0;
+      background-color: #50576d4c;
     }
 
     .form-control:focus {
