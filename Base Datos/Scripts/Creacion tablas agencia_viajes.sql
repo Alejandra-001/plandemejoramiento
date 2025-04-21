@@ -13,7 +13,7 @@ create table usuarios (
     nombre varchar(100),
     email varchar(100) unique,
     password varchar(100),
-    rol_id int,
+    rol_id int not null,
     foreign key (rol_id) references roles(id)
 );
 
